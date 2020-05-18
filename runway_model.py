@@ -6,7 +6,7 @@ import torch
 import numpy
 
 @runway.setup(options={"checkpoint": runway.category(description="Pretrained checkpoints to use.", choices=['skip'], default='skip')})
-def setup():
+def setup(opts):
     msg = '[SETUP] Running Model'
     print(msg)
     model = matcap_model.get_generator()
