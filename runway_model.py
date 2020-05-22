@@ -320,6 +320,7 @@ def generate(model, args):
     output_image = output_image.clamp(min=-1, max=1)
     output_image = (output_image - output_image.min())/(output_image.max() - output_image.min())
     # output_image = ((output_image + 1.0) * 255 / 2.0)
+    condition_patch = img
     mean_c1 = condition_patch[0][:, :, 0].mean()
     mean_c2 =  condition_patch[0][:, :, 1].mean()
     mean_c3 =  condition_patch[0][:, :, 2].mean()
