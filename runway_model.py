@@ -317,11 +317,11 @@ def generate(model, args):
 
 
     output_image = model(noise)[0]
-    output_image = img
     output_image = output_image.clamp(min=-1, max=1)
     output_image = (output_image - output_image.min())/(output_image.max() - output_image.min())
     # output_image = ((output_image + 1.0) * 255 / 2.0)
     output_image = output_image.permute(1,2,0) * 256.0
+    output_image = img * 256.0
     output_image = output_image.detach().numpy()#.astype(numpy.uint8)
     return {
         'image': output_image
