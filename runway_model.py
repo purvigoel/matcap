@@ -29,7 +29,7 @@ def generate(model, args):
     noise = noise.view(15, -1).float() 
 
     input_image = Image.open("./input.png")
-    input_image = numpy.array(input_image.resize((16, 16)))
+    input_image = numpy.array(input_image.resize((16, 16))) / 255.0
 
     input_images = []
 
@@ -42,7 +42,7 @@ def generate(model, args):
     noise = torch.cat((noise, inp),dim=1).unsqueeze(0).unsqueeze(0).permute(2, 3, 0 ,1)
 
 
-    output_image = model(noise)[2]
+    output_image = model(noise)[0]
     output_image = output_image.clamp(min=-1, max=1)
     output_image = (output_image - output_image.min())/(output_image.max() - output_image.min())
     # output_image = ((output_image + 1.0) * 255 / 2.0)
