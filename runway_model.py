@@ -22,23 +22,24 @@ def generate(model, args):
     # Generate a PIL or Numpy image based on the input caption, and return it
     img = args['patch']
     img_tensor  = torch.tensor(numpy.array(img)).float() 
-    
-    noise = torch.stack([img_tensor, img_tensor, img_tensor, img_tensor, img_tensor,
-        img_tensor, img_tensor, img_tensor, img_tensor, img_tensor,
-        img_tensor, img_tensor, img_tensor, img_tensor, img_tensor])
-    noise = noise.view(15, -1).float() 
+    hacky_workaround = []
+    hacky_workaround.append(img_tensor)
+    for i in range(99):
+        hacky_workaround.append(torch.rand(16,16,3))
+    noise = torch.stack(hacky_workaround).float()
+    noise = noise.unsqueeze(0).view(100, -1).float() 
 
     input_image = Image.open("./input.png")
-    input_image = numpy.array(input_image.resize((16, 16))) / 255.0
+    input_image = numpy.array(input_image.resize((16, 16))) / 256.0
 
     input_images = []
 
-    for inp in range(3 * 5):
+    for inp in range(100):
       input_images.append(input_image)
     input_images = torch.tensor(input_images).float()
 
 
-    inp = input_images.view(15, -1)
+    inp = input_images.view(100, -1)
     noise = torch.cat((noise, inp),dim=1).unsqueeze(0).unsqueeze(0).permute(2, 3, 0 ,1)
 
 
@@ -46,7 +47,7 @@ def generate(model, args):
     output_image = output_image.clamp(min=-1, max=1)
     output_image = (output_image - output_image.min())/(output_image.max() - output_image.min())
     # output_image = ((output_image + 1.0) * 255 / 2.0)
-    output_image = output_image.permute(1,2,0) * 255.0
+    output_image = output_image.permute(1,2,0) * 256.0
     output_image = output_image.detach().numpy().astype(numpy.uint8)
     return {
         'image': output_image
