@@ -17,7 +17,7 @@ def setup(opts):
 # outputs data types: https://sdk.runwayml.com/en/latest/data_types.html
 @runway.command(name='generate',
                 inputs={ 'patch': image(width=16, height=16) },
-                outputs={ 'image': text })
+                outputs={ 'image': image(width=16, height=16) })
 def generate(model, args):
     # Generate a PIL or Numpy image based on the input caption, and return it
     img = args['patch']
@@ -317,13 +317,14 @@ def generate(model, args):
 
 
     output_image = model(noise)[0]
+    output_image = img
     output_image = output_image.clamp(min=-1, max=1)
     output_image = (output_image - output_image.min())/(output_image.max() - output_image.min())
     # output_image = ((output_image + 1.0) * 255 / 2.0)
     output_image = output_image.permute(1,2,0) * 256.0
     output_image = output_image.detach().numpy()#.astype(numpy.uint8)
     return {
-        'image': numpy.array2string(output_image)
+        'image': output_image
     }
 
 if __name__ == '__main__':
