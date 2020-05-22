@@ -323,7 +323,7 @@ def generate(model, args):
     output_image = output_image.permute(1,2,0) * 256.0
     output_image = output_image.detach().numpy()#.astype(numpy.uint8)
     return {
-        'image': output_image.tostring()
+        'image': numpy.array2string(output_image)
     }
 
 if __name__ == '__main__':
