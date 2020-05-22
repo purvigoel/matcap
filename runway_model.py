@@ -298,7 +298,7 @@ def generate(model, args):
     hacky_workaround = []
     hacky_workaround.append(img_tensor)
     for i in range(99):
-        hacky_workaround.append(torch.zeros(16,16,3) + 0.4)
+        hacky_workaround.append(torch.zeros(16,16,3) + 0.2)
     noise = torch.stack(hacky_workaround).float()
     noise = noise.unsqueeze(0).view(100, -1).float() 
 
@@ -320,7 +320,11 @@ def generate(model, args):
     output_image = output_image.clamp(min=-1, max=1)
     output_image = (output_image - output_image.min())/(output_image.max() - output_image.min())
     # output_image = ((output_image + 1.0) * 255 / 2.0)
-    output_image = output_image.permute(1,2,0) * 256.0
+    mean_c1 = condition_patch[0][:, :, 0].mean()
+    mean_c2 =  condition_patch[0][:, :, 1].mean()
+    mean_c3 =  condition_patch[0][:, :, 2].mean()
+    output_image = output_image.permute(1,2,0)* torch.tensor([mean_c1, mean_c2, mean_c3]) * 256.0 
+
     output_image = output_image.detach().numpy()#.astype(numpy.uint8)
     return {
         'image': output_image
