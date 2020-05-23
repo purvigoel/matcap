@@ -28,7 +28,7 @@ def generate(model, args):
     hacky_workaround = []
     hacky_workaround.append(img_tensor)
     for i in range(99):
-        hacky_workaround.append(torch.zeros(16,16,3) + 0.8)
+        hacky_workaround.append(torch.zeros(16,16,3) + 0.2)
     noise = torch.stack(hacky_workaround).float()
     noise = noise.unsqueeze(0).view(100, -1).float() 
 
